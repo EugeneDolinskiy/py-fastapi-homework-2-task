@@ -24,7 +24,6 @@ async def get_movies(
         select(MovieModel).order_by(MovieModel.id.desc()).offset(offset).limit(per_page)
     )
     movies = result.scalars().all()
-    # print(movies)
 
     total = await db.execute(select(func.count()).select_from(MovieModel))
     total_items = total.scalar_one()
@@ -56,7 +55,7 @@ async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
 @router.post("/movies/", response_model=MovieDetailSchema, status_code=201)
 async def add_movie(movie: MovieCreateDetailSchema, db: AsyncSession = Depends(get_db)):
     new_film = await create_movie(db, movie)
-    return MovieDetailSchema.model_validate(new_film)
+    return new_film
 
 
 @router.patch("/movies/{movie_id}/")
@@ -76,7 +75,7 @@ async def delete_movie(
         movie_id: int,
         db: AsyncSession = Depends(get_db),
 ):
-    collect_movie = await get_movie_by_id(db, movie_id)
-    if not collect_movie:
+    movie_to_delete = await get_movie_by_id(db, movie_id)
+    if not movie_to_delete:
         raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
-    await delete_a_movie(db, collect_movie)
+    await delete_a_movie(db, movie_to_delete)

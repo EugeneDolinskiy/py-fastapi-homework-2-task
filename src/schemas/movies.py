@@ -75,6 +75,8 @@ class MovieListItemSchema(BaseModel):
     score: float
     overview: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class MovieItemSchema(MovieDetailSchema):
     id: int
