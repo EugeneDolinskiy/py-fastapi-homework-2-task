@@ -91,6 +91,6 @@ async def patch_movie(db: AsyncSession, update_data: MovieUpdateRequest, current
     return current_movie
 
 
-async def delete_a_movie(db: AsyncSession, movie):
+async def delete_a_movie(db: AsyncSession, movie: MovieModel):
     await db.delete(movie)
     await db.commit()
